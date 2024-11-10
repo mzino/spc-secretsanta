@@ -140,15 +140,26 @@ app.get('/santa', async (req, res) => {
             JOIN users AS u ON sp.recipient_id = u.steam_id
             WHERE sp.user_id = ?
         `, [userSteamId]);
-        const recipient = rows[0];
-        // Chiedi a Steam i suoi ultimi 5 giochi giocati e i 5 giochi su cui ha più ore
-        const { recentlyPlayedGames, mostPlayedGames } = await getUserGames(recipient.steam_id);
-        res.render('santa', {
-            recipient: recipient || null,
-            user: req.user,
-            recentlyPlayedGames: recentlyPlayedGames,
-            mostPlayedGames: mostPlayedGames
-        });
+        // Controlla se esiste l'assegnazione prima di caricare /santa
+        if (rows.length) {
+            const recipient = rows[0];
+            // Chiedi a Steam i suoi ultimi 5 giochi giocati e i 5 giochi su cui ha più ore
+            const { recentlyPlayedGames, mostPlayedGames } = await getUserGames(recipient.steam_id);
+            res.render('santa', {
+                recipient: recipient,
+                user: req.user,
+                recentlyPlayedGames: recentlyPlayedGames,
+                mostPlayedGames: mostPlayedGames
+            });
+        } else { 
+            // Se non esiste l'assegnazione carica la pagina senza variabili per non crashare
+            res.render('santa', {
+                recipient: null,
+                user: req.user,
+                recentlyPlayedGames: null,
+                mostPlayedGames: null
+            });
+        }
     } catch (error) {
         console.error('/santa: errore nel recuperare assegnatario. ', error);
         res.status(500).render('error500', { errorMessage: 'Contatta oniZM.' });
