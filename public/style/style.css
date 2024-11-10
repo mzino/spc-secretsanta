@@ -7,7 +7,7 @@ body {
   color: #fff;
   font-family: 'Open Sans', serif;
 }
-h1, h2, h3, h4, h5, footer, .btn, .navbar, .faq-question {
+h1, h2, h3, h4, h5, footer, .btn, .navbar, .faq-question, .nav-link {
   color: #f1c40f;
   font-family: 'DotGothic16', sans-serif;
 }
@@ -15,7 +15,7 @@ a:hover, .nav-link:focus, .nav-link:hover, .btn:hover, .navbar-brand:focus, .nav
   color: #dab626;
   transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out;
 }
-a, a:visited {
+a, a.navbar-brand {
   color: #f1c40f;
 }
 .main-title {
