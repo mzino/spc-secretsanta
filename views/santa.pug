@@ -1,0 +1,69 @@
+extends layout
+
+block content
+  .container.flex-fill
+    h1.main-title Secret Santa
+    h2.main-subtitle di SpazioPC
+
+    if recipient && process.env.PARTICIPATION_OPEN !== 'true'
+      .row.align-items-center.py-5
+        .col-xxl-3
+        .col-xxl-6.blur.py-5.px-5
+          h3.mt-4.white Invia il tuo regalo a
+          h3.mt-4.mb-5
+            img.avatar.rounded-circle.mb-3(src=recipient.steam_avatar, alt='Avatar', width='150', height='150')
+            br
+            | #[strong #{recipient.steam_name}]
+          h5.mb-4.pt-4.white Per cercare qualche spunto...
+          p.mb-3
+            a.btn.btn-success(href='https://steamcommunity.com/profiles/' + recipient.steam_id target='_blank') Vai al profilo di #{recipient.steam_name}
+          p.mb-4
+            a.btn.btn-success(href='https://store.steampowered.com/wishlist/id/' + recipient.steam_id target='_blank') Guarda la wishlist di #{recipient.steam_name}
+
+      .row.align-items-start.gx-3
+        .col-xl-2
+        .col-xl-4
+          .blur.py-5
+            h5.mb-3.pb-3 Di recente ha giocato a...
+            if recentlyPlayedGames.length
+              each game in recentlyPlayedGames
+                .d-flex.justify-content-center.mb-3
+                  a(href='https://store.steampowered.com/app/' + game.appid target='_blank')
+                    img.img-fluid.rounded(
+                      src=`https://steamcdn-a.akamaihd.net/steam/apps/${game.appid}/capsule_231x87.jpg`,
+                      alt=game.name,
+                      onerror='this.onerror=null;this.src="/img/blank-game.png";'
+                    )
+            else
+              p.my-3.py-3.px-5
+                | Qui non c'è nulla.
+                br
+                | #[strong #{recipient.steam_name}] ha il profilo privato, oppure c'è stato un errore nel recuperare la lista dei suoi giochi.
+
+        .col-xl-4
+          .blur.py-5
+            h5.mb-3.pb-3 Ha giocato un sacco di ore a...
+            if mostPlayedGames.length
+              each game in mostPlayedGames
+                .d-flex.justify-content-center.mb-3
+                  a(href='https://store.steampowered.com/app/' + game.appid target='_blank')
+                    img.img-fluid.rounded(
+                      src=`https://steamcdn-a.akamaihd.net/steam/apps/${game.appid}/capsule_231x87.jpg`,
+                      alt=game.name,
+                      onerror='this.onerror=null;this.src="/img/blank-game.png";'
+                    )
+            else
+              p.my-3.py-3.px-5
+                | Qui non c'è nulla.
+                br
+                | #[strong #{recipient.steam_name}] ha il profilo privato, oppure c'è stato un errore nel recuperare la lista dei suoi giochi.
+
+    else
+      .row.align-items-center.py-5
+        .col-xxl-3
+        .col-xxl-6.blur.py-5.px-5
+          h4.my-5
+            | Non è ancora stata effettuata l'estrazione!
+            br
+            | Torna dopo il 20 Dicembre.
+          p.my-5 Se invece l'estrazione è già avvenuta e c'è un problema, contatta oniZM.

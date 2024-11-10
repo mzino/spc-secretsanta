@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  .container.flex-fill
+    .row.align-items-center
+      .col
+        h1.big-text.mb-3 500
+        h3
+          | Errore server generico.
+          br
+          | Mi sa che è successo un casino.
+        if errorMessage
+          h5.white.mt-4
+            | Gaben ci tiene ad aggiungere:&nbsp;
+            br
+            | '#{errorMessage}'

@@ -1,0 +1,53 @@
+extends layout
+
+block content
+  .container.flex-fill
+    h1.main-title Secret Santa
+    h2.main-subtitle di SpazioPC
+
+    if user
+      .row.align-items-center.py-5
+        .col-xxl-3
+        .col-xxl-6.blur.py-5.px-5
+          img.avatar.rounded-circle.mt-5(src=user.steam_avatar, alt='Avatar', width='150', height='150')
+          h3.mt-3 #{user.steam_name}
+          if user.is_participating
+            if process.env.PARTICIPATION_OPEN === 'true'
+              p.mt-4.mb-5
+                | Grazie per aver confermato la tua partecipazione! 🎉🎉🎉
+                br
+                | Ritorna il #[strong 20 Dicembre] per scoprire a chi inviare il tuo regalo segreto.
+              p.mb-5
+                a.btn.btn-secondary(href='/faq') Dubbi? Consulta le FAQ
+            else
+              h3.white.mt-5.mb-3 Buon Natale!
+              p.mt-3.mb-5
+                a.btn.btn-success.btn-lg(href='/santa') Scopri a chi inviare il tuo regalo segreto!
+          else
+            if process.env.PARTICIPATION_OPEN === 'true'
+              p.mt-2.mb-5
+                form(action='/participate' method='post')
+                  button.btn.btn-success.my-3(type='submit') Conferma la tua partecipazione
+            else
+              h5.my-5 Le iscrizioni sono chiuse :(
+
+    else
+      .row.align-items-center.pt-5.pb-4
+        blockquote.blockquote
+          p
+            | Un regalo è il modo migliore di mostrare a qualcuno quanto teniamo a lui.
+            br
+            | È... è un oggetto concreto che tu puoi indicare e dire
+            br
+            | "Vedi amico? Ti voglio bene tanto quanto questi dollari spesi per te".
+        figcaption.blockquote-footer Michael Scott
+      .row.align-items-center.pt-4.pb-5
+        .col-xxl-3
+        .col-xxl-6.blur.py-5.px-5
+          h4.mt-5 Benvenuti al Secret Santa di SpazioPC!
+          p.mt-3.mb-4 Si dice, anche se non ne abbiamo alcuna prova concreta, che a Natale siamo tutti più buoni. Se anche voi volete dimostrarlo, non vi resta che...
+          p.mt-5.mb-0 Effettuare il login con il tuo account Steam per partecipare.
+          p.mt-2.mb-2
+            a.btn.btn-success.btn-lg.mt-2(href='/auth/steam') Login con Steam
+          p.mb-5
+            a.btn.btn-secondary(href='/faq') Dubbi? Consulta le FAQ

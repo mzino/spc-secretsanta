@@ -1,0 +1,48 @@
+extends layout
+
+block content
+  .container.flex-fill
+    h1.main-title Admin
+
+    if user.steam_id === process.env.ADMIN_STEAM_ID && process.env.PARTICIPATION_OPEN !== 'true'
+      .row.align-items-center.pt-5
+        .col
+          form(action='/run-lottery' method='post')
+            button.btn.btn-danger(type='submit') ⚠️ Avvia estrazione (admin) ⚠️
+
+    .row.align-items-center.pt-5
+      .col
+        h3.my-4 Utenti registrati
+        table.table.table-admin
+          thead
+            tr
+              th DB entry
+              th Steam ID
+              th Nome Steam
+              th Partecipa
+          tbody
+            each user in users
+              tr
+                td= user.id
+                td= user.steam_id
+                td
+                  a(href='https://steamcommunity.com/profiles/' + user.steam_id) #{user.steam_name}
+                td= user.is_participating ? 'Sì' : 'No'
+
+    .row.align-items-center.py-5
+      .col
+        h3.my-4 Abbinamenti
+        table.table.table-admin
+          thead
+            tr
+              th DB entry
+              th Steam ID
+              th Utente assegnato
+          tbody
+            each pairing in pairings
+              tr
+                td #{pairing.id}
+                td
+                  a(href='https://steamcommunity.com/profiles/' + pairing.user_id) #{pairing.user_id}
+                td
+                  a(href='https://steamcommunity.com/profiles/' + pairing.recipient_id) #{pairing.recipient_id}

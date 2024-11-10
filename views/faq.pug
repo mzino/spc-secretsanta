@@ -1,0 +1,64 @@
+extends layout
+
+block content
+  .container.flex-fill
+    h1.main-title FAQ
+    h2.main-subtitle del Secret Santa
+
+    .row.py-5.text-start
+      .col-xxl-3
+      .col-xxl-6.blur.py-5.px-5
+        h5.faq-question.mt-4 Come funziona?
+        p.faq-answer.pb-4
+          | Di sicuro conoscete la tradizione tipicamente americana del Secret Santa. Quando lo si fa di persona, ognuno mette un bigliettino con scritto il proprio nome in un recipiente, e a turno si estrae casualmente il nome di un amico a cui si dovrà fare un regalo in segreto, in modo che alla fine tutti faranno e riceveranno un dono.
+          br
+          | Noi non siamo nella stessa stanza, ma abbiamo dalla nostra i potenti mezzi informatici: ci penserà la nostra avanguardistica Intelligenza Artificiale™ a creare gli abbinamenti tra i partecipanti.
+        h5.faq-question.mt-4 Sì ma nella pratica?
+        p.faq-answer.pb-4
+          | Da ora fino al #[strong 20 Dicembre] potete iscrivervi all'iniziativa tramite l'apposito pulsante in home. Il 20 Dicembre si chiuderanno le iscrizioni e verranno sorteggiati gli abbinamenti: scoprirete quindi a quale utente dovrete fare il vostro regalo. #[strong Non diteglielo, è un segreto]!
+          br
+          | Avrete ancora qualche giorno prima di Natale, così potrete studiare il suo profilo e decidere il gioco perfetto. Potete consegnare il regalo quando volete, ma sarebbe bello se tutti lo facessero contemporaneamente al vero Babbo Natale, quindi #[strong tra il 24 e il 25 Dicembre].
+          br
+          small #[em (Magari se pesa 100GB consegnateglielo il 23 così fa in tempo a scaricarlo...)]
+        h5.faq-question.mt-4 Chi può partecipare?
+        p.faq-answer.pb-4
+          | Tutti gli utenti del forum di Spaziogames che frequentano, anche saltuariamente, SpazioPC. #[strong Non è necessario far parte del gruppo Steam privato].
+          br
+          | Dato che l'evento si basa sulla fiducia reciproca, ci riserviamo di rimuovere dalla partecipazione eventuali utenti che non conosciamo e che non si identificano.
+        h5.faq-question.mt-4 Come mai devo effettuare il login con Steam?
+        p.faq-answer.pb-4 Il login con il profilo Steam è il metodo più semplice per assicurarci che esistiate davvero, che partecipiate una volta sola per utente, e per unificare la gestione delle iscrizioni. In sostanza Steam fa da garante della vostra identità e non dovete registrarvi al sito con mail e password o altri dati sensibili.
+        h5.faq-question.mt-4 Sì ma io non mi fido, lo hanno visto tutti cosa è successo a geb95 con i russi!
+        p.faq-answer.pb-4
+          | Comprensibile, ma non c'è da preoccuparsi.&nbsp;
+          a(href='https://steamcommunity.com/dev' target='_blank') Il login con Steam usa il protocollo OpenID
+          | &nbsp;proprio per potersi registrare ai siti senza fornire altri dati o mettere a rischio il proprio account. Nessun dato personale viene condiviso con noi o con terze parti. Le uniche informazioni che possiamo ottenere dal vostro login sono quelle pubblicamente disponibili nel vostro profilo Steam, e solo se le vostre impostazioni della privacy lo consentono.
+          br
+          | Se avete dubbi, il codice sorgente del sito è disponibile&nbsp;
+          a(href='https://github.com/' target='_blank') qui (todo aggiornare link)
+          | .
+        h5.faq-question.mt-4 Cosa devo regalare?
+        p.faq-answer.pb-4
+          | Il topic degli SteamGift dimostra con i fatti che SpazioPC non bada a spese quando si parla di regali. #[strong Potete regalare il gioco che volete]!
+          br
+          | La tradizione del Secret Santa vuole che si decida un budget di massima per evitare spacevoli equivoci: suggeriamo quindi di regalare giochi dal valore complessivo di #[strong circa 15-20€] come via di mezzo.
+          br
+          | Questo dovrebbe mettere d'accordo ricchi e fan di Particula, però è solo un suggerimento! Sicuramente nessuno si offenderà se andate oltre, o se potete permettervi meno. E se si offenderà lo banneremo.
+        h5.faq-question.mt-4 Posso regalare una key proveniente da un sito losco ma 100% affidabile?
+        p.faq-answer.pb-4 Purché al destinatario arrivi un gioco funzionante, potete regalare quello che volete. Però, essendo un regalo segreto che viene rivelato al momento della consegna, consigliamo di acquistarlo direttamente dallo store di Steam. Magari il destinatario l'ha già giocato su altra piattaforma (#[em consolaro!]), oppure l'ha già provato e non gli è piaciuto, o non gira bene sul suo PC... se il regalo viene da Steam potrà rifiutarlo e permettervi di #[strong richiedere un rimborso]. Con una key questo non si può fare.
+        h5.faq-question.mt-4 Io farò il regalo all'utente che mi è stato assegnato perché sono una brava persona, ma chi mi garantisce che riceverò un regalo dal mio Babbo Natale misterioso?
+        p.faq-answer.pb-4 Nessuno. Però ormai qua ci conosciamo tutti, sarebbe una bella poracciata fare una cosa del genere per rubacchiare un gioco. Cerchiamo di avere fiducia nella nostra community e viviamo tutti più sereni.
+        h5.faq-question.mt-4 Mi sono iscritto ma ho cambiato idea, come faccio?
+        p.faq-answer.pb-4 Se non è ancora stata effettuata l'estrazione, contatta oniZM e ci penserà lui #[del a riempirti di mazzate] a rimuoverti dai partecipanti.
+        h5.faq-question.mt-4 Posso fare begging nel topic riservato a questa iniziativa sperando che il mio Babbo Natale recepisca il messaggio, #[em wink wink]?
+        p.faq-answer.pb-4
+          | ...
+          br
+          | Ah era una domanda seria? Complimenti. #[strong No, non fatelo].
+        h5.faq-question.mt-4 Io vedo tante domande e risposte ma nessuna gif. Com'è 'sta cosa?
+        p.faq-answer.pb-4
+          img.img-fluid(src='/img/ferretti.gif')
+        h5.faq-question.mt-4 Ma da tradizione le FAQ non finiscono con il link a un certo sito?
+        p.faq-answer.pb-5
+          | Beh sì, ovviamente per trovare il miglior prezzo per il vostro regalo potete andare su&nbsp;
+          a(href='https://gg.deals/' target='_blank') #[strong GG.DEALS]
+          | !

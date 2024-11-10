@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  .container.flex-fill
+    .row.align-items-center
+      .col
+        h1.big-text.mb-3 404
+        h3
+          | Pagina non trovata.
+          br
+          | Non so dove tu stia andando ma non è il posto giusto.
+        if errorMessage
+          h5.white.mt-4
+            | Gaben ci tiene ad aggiungere:&nbsp;
+            br
+            | '#{errorMessage}'
