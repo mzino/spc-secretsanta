@@ -35,8 +35,8 @@ async function assignSecretSantas() {
         }
         await connection.commit();
     } catch (error) {
-        console.error('Errore nella creazione delle assegnazioni: ', error);
         await connection.rollback();
+        throw error;
     } finally {
         connection.release();
     }

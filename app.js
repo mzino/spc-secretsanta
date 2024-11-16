@@ -161,8 +161,7 @@ app.get('/santa', async (req, res) => {
             });
         }
     } catch (error) {
-        console.error('/santa: errore nel recuperare assegnatario. ', error);
-        res.status(500).render('error500', { errorMessage: 'Contatta oniZM.' });
+        res.status(500).render('error500', { errorMessage: 'Contatta oniZM e digli "Santa".' });
     }
 });
 
@@ -175,10 +174,13 @@ app.get('/admin', async (req, res) => {
         // Recupera utenti e abbinamenti dal database
         const [users] = await pool.query('SELECT id, steam_id, steam_name, is_participating FROM users');
         const [pairings] = await pool.query('SELECT id, user_id, recipient_id FROM santa_pairings');
+        const message = req.session.message;
+        delete req.session.message;
         res.render('admin', {
             user: req.user,
             users,
-            pairings
+            pairings,
+            message
         });
     } catch (error) {
         console.error("/admin: Errore.", error);
@@ -228,10 +230,11 @@ app.post('/run-lottery', async (req, res) => {
     }
     try {
         await assignSecretSantas();
+        req.session.message = 'Abbinamenti creati con successo!';
         res.status(200).redirect('/admin');
     } catch (error) {
-        console.error(error);
-        res.status(500).render('error500', { errorMessage: '/run-lottery: errore.' });
+        req.session.message = error.toString();
+        res.status(200).redirect('/admin');
     }
 });
 
