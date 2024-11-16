@@ -2,7 +2,7 @@ extends layout
 
 block content
   .container.flex-fill
-    h1.main-title Secret Santa
+    h1.main-title.mt-4 Secret Santa
     h2.main-subtitle di SpazioPC
 
     if user
@@ -45,6 +45,7 @@ block content
         .col-xxl-3
         .col-xxl-6.blur.py-5.px-5
           h4.mt-5 Benvenuti al Secret Santa di SpazioPC!
+          img.img-fluid.my-4(src='/img/santa.jpg')
           p.mt-3.mb-4 Si dice, anche se non ne abbiamo alcuna prova concreta, che a Natale siamo tutti più buoni. Se anche tu vuoi dimostrarlo, non ti resta che...
           p.mt-5.mb-0 Effettuare il login con il tuo account Steam per partecipare.
           p.mt-2.mb-2

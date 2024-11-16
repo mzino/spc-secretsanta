@@ -17,9 +17,9 @@ async function assignSecretSantas() {
         for (let i = 0; i < shuffled.length; i++) {
             const user = shuffled[i];
             const recipient = shuffled[(i + 1) % shuffled.length];
-            // Controlla che nessuno venga assegnato a sè stesso
+            // Controlla che nessuno venga assegnato a sé stesso
             if (user.id === recipient.id) {
-                throw new Error('Utente assegnato a sè stesso.');
+                throw new Error('Utente assegnato a sé stesso.');
             }
             pairings.push({
                 user_id: user.steam_id,

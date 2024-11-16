@@ -1,4 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+@font-face {
+    font-family: 'DePixelHalbfett';
+    src: url('DePixelHalbfett.woff2') format('woff2'),
+         url('DePixelHalbfett.woff') format('woff'),
+         url('DePixelHalbfett.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'DePixelSchmal';
+    src: url('DePixelSchmal.woff2') format('woff2'),
+         url('DePixelSchmal.woff') format('woff'),
+         url('DePixelSchmal.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
 
 body {
   background-image: url(
@@ -7,30 +24,37 @@ body {
   color: #fff;
   font-family: 'Open Sans', serif;
 }
-h1, h2, h3, h4, h5, footer, .btn, .navbar, .faq-question, .nav-link {
+h2, h3, h4, h5, footer, .btn, .navbar, .faq-question, .nav-link {
   color: #f1c40f;
-  font-family: 'DotGothic16', sans-serif;
+  font-family: 'DePixelSchmal', sans-serif;
 }
 a:hover, .nav-link:focus, .nav-link:hover, .btn:hover, .navbar-brand:focus, .navbar-brand:hover {
   color: #dab626;
   transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out;
 }
-a, a.navbar-brand {
+h1, a, a.navbar-brand {
   color: #f1c40f;
 }
 .main-title {
   font-size: 4rem;
   font-weight: bold;
   margin-bottom: 0.5rem;
+  font-family: 'DePixelHalbfett', sans-serif;
+  text-shadow: 0px 0px 12px rgb(0 0 0 / 0.7);
 }
 .main-subtitle {
   font-size: 2.5rem;
   font-weight: bold;
   margin-top: 0;
+  font-family: 'DePixelHalbfett', sans-serif;
+  text-shadow: 0px 0px 12px rgb(0 0 0 / 0.7);
 }
 .big-text {
+  color: #fff;
   font-size: 7rem;
   font-weight: bold;
+  font-family: 'DePixelHalbfett', sans-serif;
+  text-shadow: 0px 0px 12px rgb(0 0 0 / 0.7);
 }
 .white {
   color: #fff;
@@ -46,16 +70,15 @@ footer {
 .container.text-center {
   min-height: 78vh;
 }
-.faq-question {
-  font-weight: bold;
-}
 .blockquote {
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-style: italic;
   margin-bottom: 0.5rem;
 }
 .blockquote-footer {
+  font-size: 1.1rem;
   color: #dab626;
+  font-family: 'DePixelSchmal', sans-serif;
 }
 img.avatar {
   border: 2px solid #f1c40f;
@@ -99,6 +122,9 @@ img.avatar {
   --bs-table-color: #fff;
   --bs-table-bg: none;
   --bs-table-border-color: #8B0000;
+}
+.img-fluid {
+    border-radius: .5em;
 }
 
 /* NEVE */

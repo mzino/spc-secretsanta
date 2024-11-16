@@ -2,7 +2,7 @@ extends layout
 
 block content
   .container.flex-fill
-    h1.main-title Admin
+    h1.main-title.mt-4 Admin
 
     if user.steam_id === process.env.ADMIN_STEAM_ID && process.env.PARTICIPATION_OPEN !== 'true'
       .row.align-items-center.pt-5
