@@ -243,13 +243,18 @@ app.post('/run-lottery', async (req, res) => {
 
 // 404
 app.use((req, res) => {
-    res.status(404).render('error404');
+    res.status(404).render('error404', {
+        user: req.user
+    });
 });
 
 // Errore 500 assurdo
 app.use((err, req, res, next) => {
     console.error(err);
-    res.status(500).render('error500', { errorMessage: 'Errore non documentato. Contatta oniZM.' });
+    res.status(500).render('error500', {
+        user: req.user,
+        errorMessage: 'Errore non documentato. Contatta oniZM.'
+    });
 });
 
 module.exports = app;
