@@ -110,12 +110,14 @@ app.get('/auth/steam/return', passport.authenticate('steam', { failureRedirect: 
 
 // Home page
 app.get('/', async (req, res) => {
+    const [usersCountRow] = await pool.query('SELECT COUNT(*) AS count FROM users WHERE is_participating = 1');
+    const usersCount = usersCountRow[0].count;
     if (req.isAuthenticated()) {
         const [rows] = await pool.query('SELECT * FROM users WHERE steam_id = ?', [req.user.steam_id]);
         const user = rows[0];
-        res.render('profile', { user });
+        res.render('profile', { user, usersCount });
     } else {
-        res.render('profile', { user: null });
+        res.render('profile', { user: null, usersCount });
     }
 });
 

@@ -94,7 +94,6 @@ const snowPreference = localStorage.getItem('snow') === 'false';
 
 // Se snowPreference non esiste vuol dire che la neve è accesa perché non è stata impostata su false
 if (!snowPreference) {
-    // localStorage.setItem('snow', 'true');
     snowContainer.style.display = 'block'; // Mostra il div della neve
 } else {
     snowContainer.style.display = 'none'; // Nascondi il div della neve

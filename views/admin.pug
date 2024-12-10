@@ -29,7 +29,7 @@ block content
                 td= user.steam_id
                 td
                   a(href='https://steamcommunity.com/profiles/' + user.steam_id) #{user.steam_name}
-                td= user.is_participating ? 'Sì' : 'No'
+                td= user.is_participating ? '✅' : '❌'
 
     .row.align-items-center.py-5
       .col
