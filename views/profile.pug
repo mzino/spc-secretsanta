@@ -13,33 +13,48 @@ block content
           h3.mt-3 #{user.steam_name}
           if user.is_participating
             if process.env.PARTICIPATION_OPEN === 'true'
-              p.mt-4.mb-5
+              p.mt-4.mb-4
                 | Grazie per aver confermato la tua partecipazione! 🎉🎉🎉
                 br
-                | Ritorna il #[strong 20 Dicembre] per scoprire a chi inviare il tuo regalo segreto.
-              p.mb-5
-                a.btn.btn-secondary(href='/faq') Dubbi? Consulta le FAQ
+                | Ritorna il #[strong 21 Dicembre] per scoprire a chi inviare il tuo regalo segreto.
               if usersCount > 0
-                h5.mb-4
-                  span 🎁 Con te abbiamo raggiunto i&nbsp;
+                h5.mb-3
+                  span 🎁 Con te abbiamo raggiunto&nbsp;
                   span.white #{usersCount}
                   span &nbsp;partecipanti! 🎁
+              p.mb-5
+                a.btn.btn-secondary(href='/faq') Dubbi? Consulta le FAQ
+              p.mt-2.mb-3
+                a.btn.btn-success.my-3(href='/gameawards') Vota per i Game Awards
+              p.mt-2.mb-5
+                a.btn.btn-success.my-3(href='/communityawards') Vota per i Community Awards
             else
               h3.white.mt-5.mb-3 Buon Natale!
-              p.mt-3.mb-5
+              p.mt-5.mb-5
                 a.btn.btn-success.btn-lg(href='/santa') Scopri a chi inviare il tuo regalo segreto!
+              p.mt-2.mb-3
+                a.btn.btn-success.my-3(href='/gameawards') Vai ai risultati dei Game Awards
+              p.mt-2.mb-5
+                a.btn.btn-success.my-3(href='/communityawards') Vai ai risultati dei Community Awards
           else
             if process.env.PARTICIPATION_OPEN === 'true'
-              p.mt-2.mb-5
-                form(action='/participate' method='post')
-                  button.btn.btn-success.my-3(type='submit') Conferma la tua partecipazione
+              form.mt-5.mb-3(action='/participate' method='post')
+                button.btn.btn-success.my-3(type='submit') Partecipa al Secret Santa
               if usersCount > 0
-                h5.mb-4
+                h5.mb-5
                   span 🎁 Ben&nbsp;
                   span.white #{usersCount}
                   span &nbsp;utenti si sono già iscritti! 🎁
+              p.mt-2.mb-3
+                a.btn.btn-success.my-3(href='/gameawards') Vota per i Game Awards
+              p.mt-2.mb-5
+                a.btn.btn-success.my-3(href='/communityawards') Vota per i Community Awards
             else
-              h5.my-5 Le iscrizioni sono chiuse :(
+              h5.my-5 Le iscrizioni e le votazioni sono chiuse :(
+              p.mt-2.mb-3
+                a.btn.btn-success.my-3(href='/gameawards') Vai ai risultati dei Game Awards
+              p.mt-2.mb-5
+                a.btn.btn-success.my-3(href='/communityawards') Vai ai risultati dei Community Awards
 
     else
       .row.align-items-center.pt-5.pb-4
@@ -54,10 +69,16 @@ block content
       .row.align-items-center.pt-4.pb-5
         .col-xxl-3
         .col-xxl-6.blur.py-5.px-5
-          h4.mt-5 Benvenuti al Secret Santa di SpazioPC!
+          h4.mt-5 Benvenuti alla seconda edizione del Secret Santa di SpazioPC!
           img.img-fluid.my-4(src='/img/santa.jpg')
           p.mt-3.mb-4 Si dice, anche se non ne abbiamo alcuna prova concreta, che a Natale siamo tutti più buoni. Se anche tu vuoi dimostrarlo, non ti resta che...
-          p.mt-5.mb-0 Effettuare il login con il tuo account Steam per partecipare.
+          p.mt-4 #[em Ehi ma...]
+          p.mt-4 #[em Chi è questa persona scusate?]
+          p.mt-4 #[em No!]
+          p.mt-4.mb-5 #[em No Geoff, che cazzo fai?!?]
+          img.img-fluid.my-4(src='/img/geoff.png')
+          p Gentile utenza di SpazioPC, ormai lo sapete che il Natale non è un vero Natale senza qualche forma di #[strong Game Awards], quindi voi ora VOTERETE. Voterete per decretare i migliori giochi PC del 2025, nonché per alcune simpatiche categorie relative alla nostra community. Vi basta...
+          p.mt-5.mb-0 Effettuare il login con l'account Steam per partecipare al #[strong Secret Santa] e agli #[strong SpazioPC Game Awards].
           p.mt-2.mb-2
             a.btn.btn-success.btn-lg.mt-2(href='/auth/steam') Login con Steam
           p.mb-5

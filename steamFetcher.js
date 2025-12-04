@@ -44,7 +44,7 @@ async function getMostPlayedGames(steamId, limit = 5) {
     }
 }
 
-// Funzione da passare all'app
+// Funzione da passare all'app: getUserGames
 async function getUserGames(steamId) {
     const [recentlyPlayedGames, mostPlayedGames] = await Promise.all([
         getRecentlyPlayedGames(steamId),
@@ -56,4 +56,42 @@ async function getUserGames(steamId) {
     };
 }
 
-module.exports = { getUserGames };
+// Funzione da passare all'app: getGameInfo
+// Cache in memoria per non ripetere le stesse richieste a Steam
+const gameCache = new Map();
+
+async function getGameInfo(appid) {
+    // Controlla se disponibile in cache
+    if (gameCache.has(appid)) {
+        return gameCache.get(appid);
+    }
+    try {
+        const url = `https://store.steampowered.com/api/appdetails?appids=${appid}`;
+        const { data } = await axios.get(url, {timeout: 10000});
+        if (!data || !data[appid] || !data[appid].success) {
+            throw new Error(`Steam non ha restituito dati validi per appid ${appid}`);
+        }
+        const info = data[appid].data;
+        const result = {
+            name: info.name,
+            capsule_image: info.capsule_image
+        };
+
+        // Inserisci il risultato in cache
+        gameCache.set(appid, result);
+        
+        return result;
+    } catch (error) {
+        console.error(`Errore in getGameInfo su appid ${appid}:`, error.message);
+
+        // Fallback per non crashare
+        const fallback = {
+            name: `AppID ${appid}`,
+            capsule_image: `https://steamcdn-a.akamaihd.net/steam/apps/${appid}/capsule_231x87.jpg`
+        };
+        gameCache.set(appid, fallback);
+        return fallback;
+    }
+}
+
+module.exports = { getUserGames, getGameInfo };

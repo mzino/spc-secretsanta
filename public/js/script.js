@@ -115,3 +115,60 @@ toggleSnow.addEventListener('change', () => {
 });
 
 // ---------------------- TOGGLE NEVE END
+
+
+// ---------------------- CHECK VOTI GAME AWARDS
+
+document.addEventListener('DOMContentLoaded', () => {
+    const gameAwardsForm = document.querySelector('#gameAwardsForm');
+    const communityAwardsForm = document.querySelector('#communityAwardsForm');
+    // Esegui solo se esiste il form nella pagina
+    if (gameAwardsForm) initGameAwardsPage(gameAwardsForm);
+    if (communityAwardsForm) initCommunityAwardsPage(communityAwardsForm);
+});
+
+function initGameAwardsPage(form) {
+    const categories = JSON.parse(form.dataset.categories);
+    const errorMessage = document.getElementById('voteError');
+
+    form.addEventListener('submit', (e) => {
+        errorMessage.style.display = 'none';
+        errorMessage.classList.remove('fade');
+
+        for (const cat of categories) {
+            const selected = form.querySelector(`input[name="${cat}"]:checked`);
+            if (!selected) {
+                e.preventDefault();
+                errorMessage.style.display = 'block';
+                errorMessage.classList.remove('fade');
+                errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => errorMessage.classList.add('fade'), 3000);
+                return;
+            }
+        }
+    });
+}
+
+function initCommunityAwardsPage(form) {
+    const categories = JSON.parse(form.dataset.categories);
+    const errorMessage = document.getElementById('voteError');
+
+    form.addEventListener('submit', (e) => {
+        errorMessage.style.display = 'none';
+        errorMessage.classList.remove('fade');
+
+        for (const cat of categories) {
+            const selected = form.querySelector(`input[name="${cat}"]:checked`);
+            if (!selected) {
+                e.preventDefault();
+                errorMessage.style.display = 'block';
+                errorMessage.classList.remove('fade');
+                errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => errorMessage.classList.add('fade'), 3000);
+                return;
+            }
+        }
+    });
+}
+
+// ---------------------- CHECK VOTI GAME AWARDS END

@@ -1,0 +1,53 @@
+extends layout-awards
+
+block content
+  .container.flex-fill
+    h1.main-title.mt-4 SpazioPC
+    h2.main-subtitle.white Community Awards 2025
+
+    if !votingOpen
+      h3.main-subtitle.mt-5.mb-3 Winners
+      .row.align-items-center.py-5.g-0
+        .col-xxl-3
+        .col-xxl-6
+          each options, cat in results
+            .row.mb-5.blur.py-5.px-2.px-sm-5.g-0
+              .row.g-0
+                h3.mt-3.mb-2= cat
+                p.category-description.mt-3.mb-4!= categories[cat].description
+              - const totalVotes = options.reduce((sum, r) => sum + r.votes, 0);
+              .row.awards-results-container.mt-3.mb-2.px-sm-2.g-0
+                each opt in options
+                  - const pct = totalVotes > 0 ? Math.round((opt.votes / totalVotes) * 100) : 0;
+                  .awards-result-row.awards-border-row.d-flex.justify-content-between.align-items-center.mb-2
+                    .awards-result-left.d-flex.align-items-center.pe-3
+                      span.awards-result-name.fs-5 #{opt.name}
+                    .awards-result-right.text-end
+                      span.awards-result-percent.fs-4 #{pct}%
+                      span.awards-result-count #{opt.votes} voti
+    else
+      h3.main-subtitle.mt-5.mb-3 Nominees
+      .row.align-items-center.py-5.g-0
+        .col-xxl-3
+        .col-xxl-6
+          if message
+            .alert.alert-success.alert-dismissible.fade.show(role='alert') #{message}
+              button.btn-close(type='button' data-bs-dismiss='alert' aria-label='Close')
+          form#communityAwardsForm(data-categories=JSON.stringify(Object.keys(categories)) action='/communityawards' method='POST')
+            each options, cat in categories
+              .row.mb-5.blur.py-5.px-2.px-sm-5.g-0
+                .row.g-0
+                  h3.mt-3.mb-2= cat
+                  p.category-description.mt-2.mb-4!= categories[cat].description
+                .row.mt-3.mb-2.g-0
+                  each opt in options.nominations
+                    label.d-block
+                      input.awards-radio(
+                        type='radio',
+                        name=cat,
+                        value=opt,
+                        checked=userVotes && userVotes[cat] == opt
+                      )
+                      p.awards-name #{opt}
+            button.btn.btn-success.btn-lg.mt-3.mb-3(type='submit')= userVotes && Object.keys(userVotes).length ? 'Aggiorna i tuoi voti' : 'Conferma i tuoi voti'
+            #voteError.alert.alert-danger(style='display:none;') Non hai votato per tutte le categorie!

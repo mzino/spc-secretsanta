@@ -48,3 +48,43 @@ block content
                   a(href='https://steamcommunity.com/profiles/' + pairing.user_id) #{pairing.user_id}
                 td
                   a(href='https://steamcommunity.com/profiles/' + pairing.recipient_id) #{pairing.recipient_id}
+
+    .row.align-items-center.py-5
+      .col
+        h3.my-4 Voti Game Awards
+        table.table.table-admin
+          thead
+            tr
+              th DB entry
+              th Steam ID
+              th Categoria
+              th Voto
+              th Anno
+          tbody
+            each gameaward in gameawards
+              tr
+                td #{gameaward.id}
+                td #{gameaward.user_id}
+                td #{gameaward.category}
+                td #{gameaward.appid}
+                td #{gameaward.year}
+
+    .row.align-items-center.py-5
+      .col
+        h3.my-4 Voti Community Awards
+        table.table.table-admin
+          thead
+            tr
+              th DB entry
+              th Steam ID
+              th Categoria
+              th Voto
+              th Anno
+          tbody
+            each communityaward in communityawards
+              tr
+                td #{communityaward.id}
+                td #{communityaward.user_id}
+                td #{communityaward.category}
+                td #{communityaward.voted_option}
+                td #{communityaward.year}

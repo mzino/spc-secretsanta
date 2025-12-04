@@ -9,10 +9,13 @@ const passport = require('passport');
 const SteamStrategy = require('passport-steam').Strategy;
 const pool = require('./db');
 const { assignSecretSantas } = require('./secretSanta');
-const { getUserGames } = require('./steamFetcher');
+const { getUserGames, getGameInfo } = require('./steamFetcher');
+const gameAwardsCategories = require('./gameAwardsCategories');
+const communityAwardsCategories = require('./communityAwardsCategories');
 require('dotenv').config();
 
 const app = express();
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Usa cartella public per file statici
@@ -27,6 +30,7 @@ redisClient.connect().catch(console.error);
 // Configurazione sessione Redis
 app.use(
     session({
+		name: 'secret_santa_session',
         store: new RedisStore(
             { client: redisClient }
         ),
@@ -34,8 +38,9 @@ app.use(
         resave: false,
         saveUninitialized: false,
         cookie: {
-            // secure: true,
+			secure: process.env.NODE_ENV === 'production',
             httpOnly: true,
+			sameSite: 'lax',
             maxAge: 30 * 24 * 60 * 60 * 1000 // 30 giorni
         },
     })
@@ -101,6 +106,15 @@ app.set('views', './views');
 // Trusta il piano
 app.set('trust proxy', 1);
 
+// Deadline per la votazione degli awards, tramite variabile ambiente
+function isVotingOpen() {
+    const end = process.env.AWARDS_VOTING_END ? new Date(process.env.AWARDS_VOTING_END) : null;
+    return !end || new Date() < end;
+}
+
+// Anno per la votazione degli awards
+const currentYear = new Date().getFullYear();
+
 
 // ------------- GET ROUTES -------------- //
 
@@ -124,8 +138,8 @@ app.get('/', async (req, res) => {
 // FAQ
 app.get('/faq', async (req, res) => {
     res.render('faq', {
-            user: req.user
-        });
+        user: req.user
+    });
 });
 
 // Profilo dell'utente assegnato con l'estrazione
@@ -167,21 +181,232 @@ app.get('/santa', async (req, res) => {
     }
 });
 
+// Game awards
+app.get('/gameawards', async (req, res) => {
+    const votingOpen = isVotingOpen();
+    const categories = gameAwardsCategories;
+
+    // Se la votazione è chiusa, mostra i risultati (anche per utenti non loggati)
+    if (!votingOpen) {
+        try {
+            const [allVotes] = await pool.query(
+                `SELECT category, appid, COUNT(*) AS votes
+                 FROM game_awards
+                 WHERE year = ?
+                 GROUP BY category, appid`,
+                [currentYear]
+            );
+            const results = {};
+
+            // Raggruppa per categoria
+            for (const row of allVotes) {
+                if (!results[row.category]) results[row.category] = {};
+                results[row.category][row.appid] = row.votes;
+            }
+
+            // Includi anche le nomination che non hanno ricevuto nessun voto
+            for (const [category, data] of Object.entries(categories)) {
+                const appids = data.nominations;
+                if (!results[category]) results[category] = {};
+                for (const appid of appids) {
+                    if (!results[category][appid]) results[category][appid] = 0;
+                }
+            }
+
+            // Converti in array e ordina per numero di voti discendente
+            const finalResults = {};
+            for (const [category, appidsVotes] of Object.entries(results)) {
+                finalResults[category] = Object.entries(appidsVotes)
+                    .map(([appid, votes]) => ({ appid, votes }))
+                    .sort((a, b) => b.votes - a.votes);
+            }
+
+            // Recupera i dettagli dei giochi da Steam
+            for (const cat in finalResults) {
+                for (const entry of finalResults[cat]) {
+                    try {
+                        const gameData = await getGameInfo(entry.appid);
+                        entry.name = gameData.name;
+                        entry.image = gameData.capsule_image;
+                    } catch {
+                        entry.name = `AppID ${entry.appid}`;
+                        entry.image = `https://cdn.cloudflare.steamstatic.com/steam/apps/${entry.appid}/header.jpg`;
+                    }
+                }
+            }
+            const message = req.session.message;
+            delete req.session.message;
+            return res.render('gameawards', {
+                user: req.user,
+                categories,
+                userVotes: null,
+                votingOpen,
+                results: finalResults,
+                message
+            });
+        } catch (error) {
+            res.status(500).render('error500', { errorMessage: 'Contatta oniZM e digli "Game awards risultati".' });
+        }
+
+    // Se la votazione è aperta, controlla che l'utente sia loggato e prepara i sondaggi
+    } else if (votingOpen && req.isAuthenticated()) {
+        try {
+            const userId = req.user.steam_id;
+            const [rows] = await pool.query(
+                'SELECT category, appid FROM game_awards WHERE user_id = ? AND year = ?',
+                [userId, currentYear]
+            );
+            const userVotes = {};
+            rows.forEach(r => userVotes[r.category] = r.appid);
+
+            // Recupera i dettagli dei giochi da Steam
+            const categoriesCopy = JSON.parse(JSON.stringify(categories));
+            for (const cat of Object.keys(categoriesCopy)) {
+                const promises = categoriesCopy[cat].nominations.map(async (game) => {
+                    const appid = typeof game === 'object' ? game.appid : game;
+                    try {
+                        const gameData = await getGameInfo(appid);
+                        return {
+                            appid,
+                            name: gameData.name,
+                            image: gameData.capsule_image
+                        };
+                    } catch (err) {
+                        return {
+                            appid,
+                            name: `AppID ${appid}`,
+                            image: `https://cdn.cloudflare.steamstatic.com/steam/apps/${appid}/header.jpg`
+                        };
+                    }
+                });
+                categoriesCopy[cat].nominations = await Promise.all(promises);
+            }
+
+            // Mostra i sondaggi (array results vuoto)
+            const message = req.session.message;
+            delete req.session.message;
+            return res.render('gameawards', {
+                user: req.user,
+                categories: categoriesCopy,
+                userVotes,
+                votingOpen,
+                results: {},
+                message
+            });
+        } catch (error) {
+            res.status(500).render('error500', { errorMessage: 'Contatta oniZM e digli "Game awards voti".' });
+        }
+
+    // Se la votazione è aperta e l'utente non è loggato, rimandalo al login
+    } else if (votingOpen && !req.isAuthenticated()) {
+        res.render('awards-login');
+    }
+});
+
+// Community awards
+app.get('/communityawards', async (req, res) => {
+    const votingOpen = isVotingOpen();
+    const categories = communityAwardsCategories;
+
+    // Se la votazione è chiusa, mostra i risultati (anche per utenti non loggati)
+    if (!votingOpen) {
+        try {
+            const [allVotes] = await pool.query(
+                `SELECT category, voted_option, COUNT(*) AS votes
+                 FROM community_awards
+                 WHERE year = ?
+                 GROUP BY category, voted_option`,
+                [currentYear]
+            );
+            const results = {};
+
+            // Raggruppa per categoria
+            for (const row of allVotes) {
+                if (!results[row.category]) results[row.category] = {};
+                results[row.category][row.voted_option] = row.votes;
+            }
+
+            // Includi anche le nomination che non hanno ricevuto nessun voto
+            for (const [category, data] of Object.entries(categories)) {
+                const opts = data.nominations;
+                if (!results[category]) results[category] = {};
+                for (const opt of opts) {
+                    if (!results[category][opt]) results[category][opt] = 0;
+                }
+            }
+            // Converti in array e ordina per numero di voti discendente
+            const finalResults = {};
+            for (const [category, optsVotes] of Object.entries(results)) {
+                finalResults[category] = Object.entries(optsVotes)
+                    .map(([name, votes]) => ({ name, votes }))
+                    .sort((a, b) => b.votes - a.votes);
+            }
+
+            const message = req.session.message;
+            delete req.session.message;
+            return res.render('communityawards', {
+                user: req.user,
+                categories,
+                userVotes: null,
+                votingOpen,
+                results: finalResults,
+                message
+            });
+        } catch (error) {
+            res.status(500).render('error500', { errorMessage: 'Contatta oniZM e digli "Community awards risultati".' });
+        }
+
+    // Se la votazione è aperta, controlla che l'utente sia loggato e prepara i sondaggi
+    } else if (votingOpen && req.isAuthenticated()) {
+        try {
+            const userId = req.user.steam_id;
+            const [rows] = await pool.query(
+                'SELECT category, voted_option FROM community_awards WHERE user_id = ? AND year = ?',
+                [userId, currentYear]
+            );
+            const userVotes = {};
+            rows.forEach(r => userVotes[r.category] = r.voted_option);
+
+            // Se la votazione è aperta, mostra i sondaggi (array results vuoto)
+            const message = req.session.message;
+            delete req.session.message;
+            return res.render('communityawards', {
+                user: req.user,
+                categories,
+                userVotes,
+                votingOpen,
+                results: {},
+                message
+            });
+        } catch (error) {
+            res.status(500).render('error500', { errorMessage: 'Contatta oniZM e digli "Community awards voti".' });
+        }
+
+    // Se la votazione è aperta e l'utente non è loggato, rimandalo al login
+    } else if (votingOpen && !req.isAuthenticated()) {
+        res.render('awards-login');
+    }
+});
+
 // Pannello admin
 app.get('/admin', async (req, res) => {
     if (!req.isAuthenticated() || req.user.steam_id !== process.env.ADMIN_STEAM_ID) {
         return res.status(403).render('error403');
     }
     try {
-        // Recupera utenti e abbinamenti dal database
+        // Recupera utenti, abbinamenti secret santa e votazioni awards dal database
         const [users] = await pool.query('SELECT id, steam_id, steam_name, is_participating FROM users');
         const [pairings] = await pool.query('SELECT id, user_id, recipient_id FROM santa_pairings');
+        const [gameawards] = await pool.query('SELECT id, user_id, category, appid, year FROM game_awards');
+        const [communityawards] = await pool.query('SELECT id, user_id, category, voted_option, year FROM community_awards');
         const message = req.session.message;
         delete req.session.message;
         res.render('admin', {
             user: req.user,
             users,
             pairings,
+            gameawards,
+            communityawards,
             message
         });
     } catch (error) {
@@ -194,11 +419,9 @@ app.get('/admin', async (req, res) => {
 // ------------- POST ROUTES ------------- //
 
 // Logout
-app.post('/logout', (req, res) => {
+app.post('/logout', (req, res, next) => {
     req.logout((err) => {
-        if (err) {
-            return next(err);
-        }
+        if (err) return next(err);
         // Cancella la sessione
         req.session.destroy((err) => {
             if (err) {
@@ -237,6 +460,58 @@ app.post('/run-lottery', async (req, res) => {
     } catch (error) {
         req.session.message = error.toString();
         res.status(200).redirect('/admin');
+    }
+});
+
+// Salva voti game awards
+app.post('/gameawards', async (req, res) => {
+    if (!req.isAuthenticated()) {
+        return res.status(401).render('error401');
+    }
+    if (!isVotingOpen()) return res.status(403).render('error403', { errorMessage: 'Le votazioni sono chiuse!' });
+
+    const userId = req.user.steam_id;
+
+    try {
+        for (const [category, appid] of Object.entries(req.body)) {
+            if (!appid) continue;
+            await pool.query(`
+                INSERT INTO game_awards (user_id, category, appid, year)
+                VALUES (?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE appid = VALUES(appid)
+              `, [userId, category, appid, currentYear]);
+        }
+        req.session.message = 'Grazie per aver votato! Se non l\'hai già fatto, vota anche per i Community Awards!';
+        res.status(200).redirect('/gameawards');
+    } catch (error) {
+        req.session.message = error.toString();
+        res.status(200).redirect('/gameawards');
+    }
+});
+
+// Salva voti community awards
+app.post('/communityawards', async (req, res) => {
+    if (!req.isAuthenticated()) {
+        return res.status(401).render('error401');
+    }
+    if (!isVotingOpen()) return res.status(403).render('error403', { errorMessage: 'Le votazioni sono chiuse!' });
+
+    const userId = req.user.steam_id;
+
+    try {
+        for (const [category, option] of Object.entries(req.body)) {
+            if (!option) continue;
+            await pool.query(`
+                INSERT INTO community_awards (user_id, category, voted_option, year)
+                VALUES (?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE voted_option = VALUES(voted_option)
+             `, [userId, category, option, currentYear]);
+        }
+        req.session.message = 'Grazie per aver votato! Se non l\'hai già fatto, vota anche per i Game Awards!';
+        res.status(200).redirect('/communityawards');
+    } catch (error) {
+        req.session.message = error.toString();
+        res.status(200).redirect('/communityawards');
     }
 });
 
