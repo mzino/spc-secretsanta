@@ -145,9 +145,9 @@ module.exports = {
         ]
     },
     "Miglior protagonista": {
-        "description": "Le candidature sono:<br><strong>[spoiler]</strong> da <em>Clair Obscur Expedition 33</em>,<br><strong>Robert Robertson III</strong> da <em>Dispatch</em>,<br><strong>Indiana Jones</strong> da <em>Indiana Jones e l'Antico Cerchio</em>,<br><strong>Henry of Skalitz</strong> da <em>Kingdom Come Deliverance II</em>,<br><strong>Jan Dolski</strong> da <em>The Alters</em>,<br><strong>Ellie</strong> da <em>The Last of Us II</em>.",
+        "description": "Le candidature sono:<br><strong>Maelle</strong> da <em>Clair Obscur Expedition 33</em>,<br><strong>Robert Robertson III</strong> da <em>Dispatch</em>,<br><strong>Indiana Jones</strong> da <em>Indiana Jones e l'Antico Cerchio</em>,<br><strong>Henry of Skalitz</strong> da <em>Kingdom Come Deliverance II</em>,<br><strong>Jan Dolski</strong> da <em>The Alters</em>,<br><strong>Ellie</strong> da <em>The Last of Us II</em>.",
         "nominations": [
-			"1903340", // Clair Obscur Expedition 33 (spoiler-ish)
+			"1903340", // Clair Obscur Expedition 33 (Maelle)
             "2592160", // Dispatch (Robert Robertson III)
 			"2677660", // Indiana Jones (Indiana Jones)
 			"1771300", // Kingdom Come Deliverance 2 (Henry of Skalitz)
@@ -156,9 +156,9 @@ module.exports = {
         ]
     },
     "Miglior antagonista": {
-        "description": "Le candidature sono:<br><strong>[spoiler]</strong> da <em>Clair Obscur Expedition 33</em>,<br><strong>Tetsuya Nomura</strong> per <em>Final Fantasy VII Rebirth</em>,<br><strong>The Boss</strong> da <em>Metal Gear Solid Δ</em>,<br><strong>[spoiler]</strong> da <em>The Last of Us Part II</em>.",
+        "description": "Le candidature sono:<br><strong>Renoir</strong> da <em>Clair Obscur Expedition 33</em>,<br><strong>Tetsuya Nomura</strong> per <em>Final Fantasy VII Rebirth</em>,<br><strong>The Boss</strong> da <em>Metal Gear Solid Δ</em>,<br><strong>[spoiler]</strong> da <em>The Last of Us Part II</em>.",
         "nominations": [
-            "1903340", // Clair Obscur Expedition 33 (spoiler-ish)
+            "1903340", // Clair Obscur Expedition 33 (Renoir)
             "2909400", // Final Fantasy VII Rebirth (Tetsuya Nomura)
             "2417610", // Metal Gear Solid Delta (The Boss)
             "2531310" // The Last of Us II (spoiler)

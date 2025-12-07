@@ -24,7 +24,7 @@ module.exports = {
             "Y2Valian - Warhammer 40,000: Space Marine 2",
             "The_Train - Cronos: The New Dawn",
             "Radoom91 - Callisto Protocol",
-            "Il vincitore di Novembre 2025 che non si sa ancora"
+            "Mr. Jim Oak - Tokyo Xtreme Racer"
         ]
     },
 	"Content Creator of the Year": {
