@@ -195,6 +195,7 @@ module.exports = {
         "description": "Only On PlayStation® or something",
         "nominations": [
             "3909960", // Dementium
+            "3504570", // Fear Effect
             "2651280", // Marvel's Spiderman 2
             "3489700", // Stellar Blade
 			"2531310" // The Last of Us II
